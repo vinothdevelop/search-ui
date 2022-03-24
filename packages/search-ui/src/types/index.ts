@@ -113,6 +113,7 @@ export type FacetConfiguration = {
   ranges?: FilterValueRange[];
   center?: string;
   unit?: string;
+  sort?: "count" | "value";
 };
 
 // todo: types
@@ -126,7 +127,19 @@ export type SearchQuery = {
   search_fields?: Record<string, FieldConfiguration>;
 };
 
-export type APIConnector = any;
+export interface APIConnector {
+  onSearch(
+    state: RequestState,
+    queryConfig: QueryConfig
+  ): Promise<ResponseState>;
+  onAutocomplete(
+    state: RequestState,
+    queryConfig: AutocompleteQuery
+  ): Promise<AutocompleteResponseState>;
+  onResultClick(params): void;
+  onAutocompleteResultClick(params): void;
+  state: any;
+}
 
 // From https://github.com/elastic/search-ui/blob/9db35e1a49d95f854b77172f7ccfe540b22a793d/ADVANCED.md#query-config
 export type QueryConfig = RequestState & SearchQuery;

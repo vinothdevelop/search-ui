@@ -8,18 +8,31 @@ import type {
   RequestState,
   SearchState,
   AutocompleteQuery,
-  SuggestionsQueryConfig
+  SuggestionsQueryConfig,
+  APIConnector
 } from "@elastic/search-ui";
 
-export type AppSearchAPIConnectorParams = {
-  searchKey: string;
+interface AppSearchAPIConnectorParamsBase {
+  searchKey?: string;
   engineName: string;
-  hostIdentifier: string;
   beforeSearchCall?: SearchQueryHook;
   beforeAutocompleteResultsCall?: SearchQueryHook;
   beforeAutocompleteSuggestionsCall?: SuggestionsQueryHook;
-  endpointBase?: string;
-};
+}
+
+interface AppSearchAPIConnectorParamsForSwiftType
+  extends AppSearchAPIConnectorParamsBase {
+  hostIdentifier: string;
+}
+
+interface AppSearchAPIConnectorParamsForOther
+  extends AppSearchAPIConnectorParamsBase {
+  endpointBase: string;
+}
+
+export type AppSearchAPIConnectorParams =
+  | AppSearchAPIConnectorParamsForSwiftType
+  | AppSearchAPIConnectorParamsForOther;
 
 interface ResultClickParams {
   query: string;
@@ -47,7 +60,7 @@ function removeEmptyFacetsAndFilters(options) {
     ...rest
   };
 }
-class AppSearchAPIConnector {
+class AppSearchAPIConnector implements APIConnector {
   /**
    * @callback next
    * @param {Object} updatedQueryOptions The options to send to the API
@@ -75,6 +88,7 @@ class AppSearchAPIConnector {
    */
 
   client: any;
+  state: any = {};
   beforeSearchCall?: SearchQueryHook;
   beforeAutocompleteResultsCall?: SearchQueryHook;
   beforeAutocompleteSuggestionsCall?: SuggestionsQueryHook;
@@ -85,23 +99,21 @@ class AppSearchAPIConnector {
   constructor({
     searchKey,
     engineName,
-    hostIdentifier,
     beforeSearchCall = (queryOptions, next) => next(queryOptions),
     beforeAutocompleteResultsCall = (queryOptions, next) => next(queryOptions),
     beforeAutocompleteSuggestionsCall = (queryOptions, next) =>
       next(queryOptions),
-    endpointBase = "",
     ...rest
   }: AppSearchAPIConnectorParams) {
-    if (!engineName || !(hostIdentifier || endpointBase)) {
+    if (!engineName || !("hostIdentifier" in rest || "endpointBase" in rest)) {
       throw Error(
         "hostIdentifier or endpointBase, and engineName are required"
       );
     }
 
     this.client = ElasticAppSearch.createClient({
-      ...(endpointBase && { endpointBase }), //Add property on condition
-      ...(hostIdentifier && { hostIdentifier: hostIdentifier }),
+      ...("endpointBase" in rest && { endpointBase: rest.endpointBase }), //Add property on condition
+      ...("hostIdentifier" in rest && { hostIdentifier: rest.hostIdentifier }),
       apiKey: searchKey,
       engineName: engineName,
       ...rest
