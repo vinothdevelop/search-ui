@@ -16,25 +16,14 @@ type ConnectionOptions = {
   apiKey?: string;
 };
 
-type SearchConfiguration = {
-  queryFields: string[];
-};
-
 class ElasticsearchAPIConnector implements APIConnector {
-  state = {};
+  constructor(private config: ConnectionOptions) {}
 
-  constructor(
-    private config: ConnectionOptions,
-    private searchConfig: SearchConfiguration
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onResultClick(): void {}
 
-  onResultClick(): void {
-    console.error("not implemented");
-  }
-
-  onAutocompleteResultClick(): void {
-    console.error("not implemented");
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onAutocompleteResultClick(): void {}
 
   async onSearch(
     state: RequestState,
@@ -47,8 +36,7 @@ class ElasticsearchAPIConnector implements APIConnector {
       index: this.config.index,
       connectionOptions: {
         apiKey: this.config.apiKey
-      },
-      queryFields: this.searchConfig.queryFields
+      }
     });
   }
 
@@ -63,8 +51,7 @@ class ElasticsearchAPIConnector implements APIConnector {
       index: this.config.index,
       connectionOptions: {
         apiKey: this.config.apiKey
-      },
-      queryFields: this.searchConfig.queryFields
+      }
     });
   }
 }

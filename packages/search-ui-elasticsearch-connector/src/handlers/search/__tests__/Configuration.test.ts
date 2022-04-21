@@ -38,7 +38,7 @@ describe("Search - Configuration", () => {
       };
 
       expect(getResultFields(resultFields)).toEqual({
-        hitFields: ["title", "url"],
+        hitFields: ["title", "description", "url"],
         highlightFields: ["title", "description"]
       });
     });
@@ -46,9 +46,14 @@ describe("Search - Configuration", () => {
 
   describe("buildConfiguration", () => {
     const queryConfig: QueryConfig = {
+      search_fields: {
+        title: {
+          weight: 2
+        },
+        description: {}
+      },
       result_fields: {
         title: {
-          raw: {},
           snippet: {}
         },
         description: {
@@ -74,7 +79,6 @@ describe("Search - Configuration", () => {
     const host = "http://localhost:9200";
     const index = "test_index";
     const apiKey = "apiKey";
-    const queryFields = ["title", "description"];
 
     it("builds configuration", () => {
       const state: RequestState = {
@@ -82,7 +86,7 @@ describe("Search - Configuration", () => {
       };
 
       expect(
-        buildConfiguration(state, queryConfig, host, index, apiKey, queryFields)
+        buildConfiguration(state, queryConfig, host, index, apiKey)
       ).toEqual(
         expect.objectContaining({
           host: "http://localhost:9200",
@@ -91,14 +95,14 @@ describe("Search - Configuration", () => {
             apiKey: "apiKey"
           },
           hits: {
-            fields: ["title", "url"],
+            fields: ["title", "description", "url"],
             highlightedFields: ["title", "description"]
           }
         })
       );
 
       expect(MultiMatchQuery).toHaveBeenCalledWith({
-        fields: ["title", "description"]
+        fields: ["title^2", "description^1"]
       });
 
       expect(RefinementSelectFacet).toHaveBeenCalledTimes(2);
@@ -131,8 +135,7 @@ describe("Search - Configuration", () => {
           { ...queryConfig, facets: null },
           host,
           index,
-          apiKey,
-          queryFields
+          apiKey
         )
       ).toEqual(
         expect.objectContaining({
@@ -142,14 +145,14 @@ describe("Search - Configuration", () => {
             apiKey: "apiKey"
           },
           hits: {
-            fields: ["title", "url"],
+            fields: ["title", "description", "url"],
             highlightedFields: ["title", "description"]
           }
         })
       );
 
       expect(MultiMatchQuery).toHaveBeenCalledWith({
-        fields: ["title", "description"]
+        fields: ["title^2", "description^1"]
       });
 
       expect(RefinementSelectFacet).toHaveBeenCalledTimes(2);
@@ -227,8 +230,7 @@ describe("Search - Configuration", () => {
           },
           host,
           index,
-          apiKey,
-          queryFields
+          apiKey
         )
       ).toEqual(
         expect.objectContaining({
@@ -238,7 +240,7 @@ describe("Search - Configuration", () => {
             apiKey: "apiKey"
           },
           hits: {
-            fields: ["title", "url"],
+            fields: ["title", "description", "url"],
             highlightedFields: ["title", "description"]
           }
         })

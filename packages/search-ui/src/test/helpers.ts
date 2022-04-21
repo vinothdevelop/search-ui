@@ -54,8 +54,17 @@ export function getMockApiConnector(): APIConnector {
     }),
     onSearch: jest.fn().mockReturnValue({ then: (cb) => cb(searchResponse) }),
     onResultClick: jest.fn().mockReturnValue(Promise.resolve(true)),
-    onAutocompleteResultClick: jest.fn().mockReturnValue(Promise.resolve(true)),
-    state: {}
+    onAutocompleteResultClick: jest.fn().mockReturnValue(Promise.resolve(true))
+  };
+}
+
+export function getMockApiConnectorWithStateAndActions() {
+  return {
+    ...getMockApiConnector(),
+    state: { foo: "foo" },
+    actions: {
+      bar: jest.fn().mockReturnValue("bar")
+    }
   };
 }
 

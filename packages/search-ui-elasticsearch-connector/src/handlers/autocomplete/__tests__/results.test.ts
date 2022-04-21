@@ -27,6 +27,9 @@ const mockSearchkitResponse: SearchkitResponse = {
         },
         highlight: {
           title: "hello"
+        },
+        rawHit: {
+          _id: "test"
         }
       }
     ]
@@ -55,6 +58,11 @@ describe("Autocomplete results", () => {
     const queryConfig: AutocompleteQueryConfig = {
       results: {
         resultsPerPage: 5,
+        search_fields: {
+          title: {
+            weight: 2
+          }
+        },
         result_fields: {
           title: {
             snippet: {
@@ -75,14 +83,16 @@ describe("Autocomplete results", () => {
       index: "test",
       connectionOptions: {
         apiKey: "test"
-      },
-      queryFields: ["title", "description"]
+      }
     });
 
     expect(results).toMatchInlineSnapshot(`
       Object {
         "autocompletedResults": Array [
           Object {
+            "_meta": Object {
+              "id": "test",
+            },
             "description": Object {
               "raw": "test",
             },

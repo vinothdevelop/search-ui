@@ -27,6 +27,9 @@ const mockSearchkitResponse: SearchkitResponse = {
         },
         highlight: {
           title: "hello"
+        },
+        rawHit: {
+          _id: "test"
         }
       }
     ]
@@ -98,8 +101,7 @@ describe("Search results", () => {
       index: "test",
       connectionOptions: {
         apiKey: "test"
-      },
-      queryFields: ["title", "description"]
+      }
     });
 
     expect(results).toMatchInlineSnapshot(`
@@ -143,6 +145,9 @@ describe("Search results", () => {
         "resultSearchTerm": "test",
         "results": Array [
           Object {
+            "_meta": Object {
+              "id": "test",
+            },
             "description": Object {
               "raw": "test",
             },

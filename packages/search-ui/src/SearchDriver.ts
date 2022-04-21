@@ -113,7 +113,7 @@ export type SearchDriverOptions = {
   apiConnector: APIConnector;
   autocompleteQuery?: AutocompleteQueryConfig;
   debug?: boolean;
-  initialState?: Partial<SearchState>;
+  initialState?: Partial<RequestState>;
   onSearch?: onSearchHook;
   onAutocomplete?: onAutocompleteHook;
   onResultClick?: onResultClickHook;
@@ -184,6 +184,12 @@ class SearchDriver {
       },
       {}
     ) as actions.SearchDriverActions;
+
+    this.actions = {
+      ...this.actions,
+      ...(apiConnector?.actions && { ...apiConnector.actions })
+    };
+
     Object.assign(this, this.actions);
 
     this.events = new Events({

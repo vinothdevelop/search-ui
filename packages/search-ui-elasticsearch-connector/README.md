@@ -4,6 +4,8 @@ Part of the [Search UI](https://github.com/elastic/search-ui) project.
 
 This Connector is used to connect Search UI directly to Elasticsearch.
 
+> ⚠️ Elasticsearch connector for Search UI is currently in technical preview status. It is not ready for production use. ⚠️
+
 ## Usage
 
 ```shell
@@ -13,18 +15,13 @@ npm install --save @elastic/search-ui-elasticsearch-connector
 ```js
 import ElasticsearchAPIConnector from "@elastic/search-ui-elasticsearch-connector";
 
-const connector = new ElasticsearchAPIConnector(
-  {
-    host: "http://localhost:9200", // host url for the elasticsearch instance
-    index: "search-ui-examples", // index name where the search documents are contained
-    apiKey: "apiKeyExample" // Optional. apiKey used to authorize a connection to Elasticsearch instance.
-    // This key will be visible to everyone so ensure its setup with restricted privileges.
-    // See Authentication section for more details.
-  },
-  {
-    queryFields: ["title", "description"]
-  }
-);
+const connector = new ElasticsearchAPIConnector({
+  host: "http://localhost:9200", // host url for the elasticsearch instance
+  index: "search-ui-examples", // index name where the search documents are contained
+  apiKey: "apiKeyExample" // Optional. apiKey used to authorize a connection to Elasticsearch instance.
+  // This key will be visible to everyone so ensure its setup with restricted privileges.
+  // See Authentication section for more details.
+});
 ```
 
 ## ElasticsearchAPIConnector
@@ -33,10 +30,9 @@ const connector = new ElasticsearchAPIConnector(
 
 ### new ElasticsearchAPIConnector(options)
 
-| Param         | Type                                    |
-| ------------- | --------------------------------------- |
-| options       | [<code>Options</code>](#Options)        |
-| searchOptions | [<code>Options</code>](#Search Options) |
+| Param   | Type                             |
+| ------- | -------------------------------- |
+| options | [<code>Options</code>](#Options) |
 
 ## Options
 
@@ -48,13 +44,9 @@ const connector = new ElasticsearchAPIConnector(
 | index  | <code>string</code> |         | Index name for where the search documents are contained in                                                                                     |
 | apiKey | <code>string</code> |         | Optional. Credential thats setup within Kibana's UI. see [kibana API keys guide](https://www.elastic.co/guide/en/kibana/master/api-keys.html). |
 
-## Search Options
+## Query Configuration Requirements
 
-**Kind**: global typedef
-
-| Param       | Type                  | Default | Description                          |
-| ----------- | --------------------- | ------- | ------------------------------------ |
-| queryFields | <code>[string]</code> |         | String Array of fields to search on. |
+- `search_fields` object is required with all fields you want to search by.
 
 ## Connection & Authentication
 

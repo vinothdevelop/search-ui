@@ -12,22 +12,19 @@ interface SearchHandlerConfiguration {
   connectionOptions?: {
     apiKey: string;
   };
-  queryFields: string[];
 }
 
 export default async function handleRequest(
   configuration: SearchHandlerConfiguration
 ): Promise<ResponseState> {
-  const { state, queryConfig, host, index, connectionOptions, queryFields } =
-    configuration;
+  const { state, queryConfig, host, index, connectionOptions } = configuration;
   const { apiKey } = connectionOptions || {};
   const searchkitConfig = buildConfiguration(
     state,
     queryConfig,
     host,
     index,
-    apiKey,
-    queryFields
+    apiKey
   );
   const request = Searchkit(searchkitConfig);
 
@@ -41,7 +38,8 @@ export default async function handleRequest(
       facets: queryConfig.facets && Object.keys(queryConfig.facets).length > 0,
       hits: {
         from: searchkitVariables.from,
-        size: searchkitVariables.size
+        size: searchkitVariables.size,
+        includeRawHit: true
       }
     });
 

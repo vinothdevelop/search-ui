@@ -96,6 +96,10 @@ export type FieldConfiguration = {
   raw?: any;
 };
 
+export type SearchFieldConfiguration = {
+  weight?: number;
+};
+
 // https://github.com/elastic/search-ui/blob/master/ADVANCED.md#configuring-autocomplete-queries
 export type AutocompleteQueryConfig = {
   results?: QueryConfig;
@@ -124,7 +128,7 @@ export type SearchQuery = {
   disjunctiveFacets?: string[];
   disjunctiveFacetsAnalyticsTags?: string[];
   result_fields?: Record<string, FieldConfiguration>;
-  search_fields?: Record<string, FieldConfiguration>;
+  search_fields?: Record<string, SearchFieldConfiguration>;
 } & RequestState;
 
 export type AutocompleteSearchQuery = {
@@ -142,7 +146,8 @@ export interface APIConnector {
   ): Promise<AutocompleteResponseState>;
   onResultClick(params): void;
   onAutocompleteResultClick(params): void;
-  state: any;
+  state?: any;
+  actions?: any;
 }
 
 // From https://github.com/elastic/search-ui/blob/9db35e1a49d95f854b77172f7ccfe540b22a793d/ADVANCED.md#query-config
